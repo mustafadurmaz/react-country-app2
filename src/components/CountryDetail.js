@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from "react";
 import { ApolloClient, InMemoryCache, gql, useQuery } from "@apollo/client";
 import { Container, ListGroup } from "react-bootstrap";
+import "bootstrap/dist/js/bootstrap.min.js";
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  uri: "https://countries.trevorblades.com",
-});
-
-const client2 = new ApolloClient({
   cache: new InMemoryCache(),
   uri: "https://countries.trevorblades.com",
 });
@@ -34,7 +29,7 @@ function CountryDetail({ continentcode }) {
   const { data, loading, error } = useQuery(continentList, { client });
 
   const [languages, setLanguages] = useState([]);
-  const [countries, setCountries] = useState([]);
+  const [countries, setCountries] = useState([]); //tüm ülkeler
 
   if (loading || error) {
     return <p>{error ? error.message : "Loading..."}</p>;
@@ -44,9 +39,9 @@ function CountryDetail({ continentcode }) {
     countries.push(data.continents[i].countries);
   }
 
-  var select1 = [];
-  var select2 = [];
-  var select3 = [];
+  var select1 = []; //seçilen diller
+  var select2 = []; //ortak ülkeler
+  var select3 = []; //ortak ülke ve kıtalar
 
   //   console.log(countries);
 
@@ -65,24 +60,6 @@ function CountryDetail({ continentcode }) {
   }
 
   console.log(array);
-
-  //   array.forEach(o => {
-  //     if (select1.includes(o.languages[0]?.name)) {
-  //         select2.push(o.name);
-  //     }
-  //     if (select1.includes(o.languages[1]?.name)) {
-  //         select2.push(o.name);
-  //     }
-  //     if (select1.includes(o.languages[2]?.name)) {
-  //         select2.push(o.name);
-  //     }
-  //     if (select1.includes(o.languages[3]?.name)) {
-  //         select2.push(o.name);
-  //     }
-  //     if (select1.includes(o.languages[4]?.name)) {
-  //         select2.push(o.name);
-  //     }
-  // });
 
   array.forEach((o) => {
     for (let i = 0; i < o.languages.length; i++) {
@@ -117,16 +94,11 @@ function CountryDetail({ continentcode }) {
     data,
   }));
 
-  console.log(ulke);
-
-  console.log(select2);
-  console.log(select3);
+  //console.log(ulke);
 
   const filteredData = data.continents.filter(
     (continent) => continent.code === continentcode
   );
-
-  console.log(data.continents);
 
   return (
     <>
@@ -164,21 +136,25 @@ function CountryDetail({ continentcode }) {
                           {ulke.map(({ title, data }, i) => (
                             <div key={i}>
                               <div>
-                                <h1>{title}</h1>
-                                {data.map((prem, j) => (
-                                  <p key={j}>{prem.ulke}</p>
-                                ))}
+                                <h3>{title}</h3>
+                                <ListGroup>
+                                  {data.map((prem, j) => (
+                                    <ListGroup.Item key={j}>
+                                      {prem.ulke}
+                                    </ListGroup.Item>
+                                  ))}
+                                </ListGroup>
                               </div>
                             </div>
                           ))}
                         </div>
 
-                        <button
+                        {/* <button
                           type="button"
                           className="btn-close"
                           data-bs-dismiss="modal"
                           aria-label="Close"
-                        ></button>
+                        ></button> */}
                       </div>
                     </div>
                   </div>
